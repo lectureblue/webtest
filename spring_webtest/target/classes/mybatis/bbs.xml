@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="bbs">
+
+  <select id="checkRefnum" parameterType="int" resultType="int">
+  	select count(*) from bbs
+  	where refnum = #{bbsno}
+  </select>
+  <delete id="delete" parameterType="int">
+  	delete from bbs
+  	where bbsno = #{bbsno}
+  </delete>
+
+  <select id="replyRead" parameterType="int" resultType="BbsDTO">
+    select bbsno, title, grpno, indent, ansnum 
+	from bbs                                
+	where bbsno = #{Bbsno}                         
+  </select>
+  <update id="upAnsnum" parameterType="Map">
+    update bbs          
+ 	set ansnum = ansnum + 1 
+ 	where grpno = #{grpno}    
+ 	and ansnum > #{ansnum}      
+  </update>
+  <insert id="replyCreate" parameterType="BbsDTO">
+  	INSERT INTO bbs(bbsno, wname, title,                               
+	content, passwd, wdate, grpno, indent, ansnum, refnum,filename,filesize)
+	VALUES(                                                              
+	(SELECT NVL(MAX(bbsno), 0)+1 FROM bbs),                              
+	#{wname}, #{title}, #{content}, #{passwd}, sysdate, 
+	#{grpno}, #{indent}+1, #{ansnum}+1, #{bbsno},
+	#{filename, jdbcType=VARCHAR},#{filesize, jdbcType=INTEGER})                                 
+  </insert>
+  
+  <insert id="create" parameterType="BbsDTO">
+    INSERT INTO bbs(bbsno, wname, title,         
+	content, passwd, wdate, grpno,filename,filesize)
+	VALUES(                                     
+	(SELECT NVL(MAX(bbsno), 0)+1 FROM bbs),     
+	#{wname}, #{title}, #{content}, #{passwd}, sysdate,                         
+	(SELECT NVL(MAX(grpno), 0)+1 FROM bbs),
+	#{filename,jdbcType=VARCHAR},#{filesize,jdbcType=INTEGER}) 
+  </insert>
+
+  <update id="update" parameterType="BbsDTO">
+  	update bbs
+  	set wname = #{wname} ,
+  		title = #{title} ,
+  		content = #{content}
+  	<if test="filesize >0 ">
+  	    ,filename = #{filename},
+  	     filesize = #{filesize}
+  	</if>
+  	where bbsno = #{bbsno}
+  </update>
+
+  <select id="passwdCheck" parameterType="Map" resultType="int">
+  	select count(*)
+  	from bbs
+  	where bbsno = #{bbsno}
+  	and passwd = #{passwd}
+  
+  </select>
+  
+  <update id="upViewcnt" parameterType="int">
+  	update bbs
+  	set viewcnt = viewcnt + 1
+  	where bbsno = #{bbsno}
+  </update>
+
+  <select id="read" parameterType="int" resultType="BbsDTO">
+    SELECT bbsno, wname, title, viewcnt,filename,filesize,
+	to_char(wdate,'yyyy-mm-dd') as wdate, content     
+	FROM bbs                                          
+	WHERE bbsno = #{bbsno}                                   
+  </select>
+
+  <select id="total" parameterType="Map" resultType="int">
+   select count(*) from bbs
+   <where>
+       <choose>
+       	<when test="col=='wname'">
+       		wname like '%'||#{word}||'%'
+       	</when>
+       	<when test="col=='title'">
+       		title like '%'||#{word}||'%'
+       	</when>
+       	<when test="col=='content'">
+       		content like '%'||#{word}||'%'
+       	</when>
+       </choose>
+       
+    </where>            
+  
+  </select>
+
+  <select id="list" parameterType="Map" resultType="BbsDTO">
+	SELECT bbsno, wname, title, viewcnt, wdate, 
+	indent, filename,  r                      
+	from(                                      
+		SELECT bbsno, wname, title, viewcnt, wdate, 
+		indent, filename, rownum as r           
+		from (                                   
+	        SELECT bbsno, wname, title, viewcnt,  
+	        to_char(wdate,'yyyy-mm-dd') as wdate,
+	        indent, filename                 
+	        FROM bbs                           
+            <where>
+            <choose>
+            	<when test="col=='wname'">
+            		wname like '%'||#{word}||'%'
+            	</when>
+            	<when test="col=='title'">
+            		title like '%'||#{word}||'%'
+            	</when>
+            	<when test="col=='content'">
+            		content like '%'||#{word}||'%'
+            	</when>
+            </choose>
+            
+            </where>                    
+	          
+	        ORDER BY grpno DESC, ansnum      
+	                                               
+	   ) 
+	<![CDATA[                                     
+	)where r>= #{sno} and r<= #{eno}                     
+    ]]>
+   </select>
+</mapper>

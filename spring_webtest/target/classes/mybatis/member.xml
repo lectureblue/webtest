@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="member">
+
+    <select id="loginCheck" parameterType="Map" resultType="int">
+    	select count(*) from member
+		where id= #{id}            
+		and passwd= #{passwd}         
+    </select>
+
+	<select id="duplicateEmail" parameterType="String" resultType="int">
+		SELECT COUNT(email) 
+		FROM member   
+		WHERE email=#{email}  
+	</select>
+	<select id="duplicateId" parameterType="String" resultType="int">
+		SELECT COUNT(id) 
+		FROM member   
+		WHERE id=#{id}   
+	</select>
+	
+	<select id="getIdFind" parameterType="Map" resultType="String">
+		select id from member 
+		where mname = #{mname}    
+		and email = #{email} 
+	</select>
+	
+	<select id="getPwFind" parameterType="Map" resultType="String">
+		select passwd from member 
+		where mname = #{mname}      
+		and id = #{id}            
+	</select>
+	
+	<select id="getFname" parameterType="String" resultType="String">
+		 select fname from member 
+ 		 where id = #{id}         
+	</select>
+	
+	<select id="getGrade" parameterType="String" resultType="String">
+		select grade from member 
+ 		where id = #{id} 
+	</select>
+	
+	<update id="updateFile" parameterType="Map">
+		update member 
+ 		set fname =#{fname} 
+ 		where id = #{id}  
+	</update>
+	
+	<delete id="delete" parameterType="String">
+		delete from member
+		where id = #{id}  
+	</delete>
+	
+	<update id="update" parameterType="MemberDTO">
+		 update member  
+		 set tel      = #{tel} ,
+		     email    = #{email} ,
+		     zipcode  = #{zipcode , jdbcType=VARCHAR} ,
+		     address1 = #{address1 , jdbcType=VARCHAR} ,
+		     address2 = #{address2 , jdbcType=VARCHAR} ,
+		     job      = #{job}   
+		 where id = #{id}   
+	</update>
+
+	<insert id="create" parameterType="MemberDTO">
+		INSERT INTO member(id, passwd, mname, tel,
+ 		email, zipcode,address1,address2, job, 
+		mdate, fname)                   
+		VALUES(#{id}, #{passwd}, #{mname}, #{tel,jdbcType=VARCHAR}, 
+		#{email}, 
+		#{zipcode,jdbcType=VARCHAR},#{address1,jdbcType=VARCHAR},
+		#{address2,jdbcType=VARCHAR},
+		#{job},sysdate, #{fname})                      	        	
+	</insert>
+
+	<select id="list" parameterType="Map" resultType="MemberDTO">
+	  SELECT id, mname, tel, email, address1, address2, fname, r       
+	  FROM(                                                               
+		  SELECT id, mname, tel, email, address1, address2, fname, rownum r 
+		  FROM(                                                          
+		      SELECT id, mname, tel, email, address1, address2, fname       
+		      FROM member                                                    
+                                                   
+		      <where>      
+		       <if test="col=='id'">
+		       id  LIKE '%'||#{word}||'%'                           
+			   </if>		                                                                            
+		       <if test="col=='email'">
+		       email  LIKE '%'||#{word}||'%'                           
+			   </if>		                                                                       
+		       <if test="col=='mname'">
+		       mname  LIKE '%'||#{word}||'%'                           
+			   </if>		                                                                       
+              </where>		                                                                   
+		      ORDER BY id ASC                                             
+		     ) 
+        <![CDATA[		                                                                  
+		  )WHERE r >= #{sno} AND r <= #{eno}  
+	    ]]>                                         
+	</select>
+	
+	<select id="total" parameterType="Map" resultType="int">
+	   select count(*) from member
+	   <where>      
+       <if test="col=='id'">
+       id  LIKE '%'||#{word}||'%'                           
+	   </if>		                                                                            
+       <if test="col=='email'">
+       email  LIKE '%'||#{word}||'%'                           
+	   </if>		                                                                       
+       <if test="col=='mname'">
+       mname  LIKE '%'||#{word}||'%'                           
+	   </if>		                                                                       
+       </where>		
+	</select>
+	
+	<select id="read" parameterType="String" resultType="MemberDTO">
+	  SELECT id,mname,tel,email,zipcode,
+	  address1,address2,job,mdate,fname 
+	  FROM member                     
+	  WHERE id = #{id}                   
+		
+	</select>
+
+</mapper>

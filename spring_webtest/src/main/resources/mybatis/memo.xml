@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="memo">
+
+	<select id="refnumCheck" parameterType="int" resultType="int">
+		select count(*) from memo
+		where refnum = #{memono}
+	
+	</select>
+
+	<insert id="create" parameterType="MemoDTO">
+	 insert into memo(memono, title, content, wdate, grpno)
+ 	 values(memo_seq.nextval,#{title}, #{content},sysdate,           
+ 	 (select nvl(max(grpno),0) +1 from memo ))        
+	
+	</insert>
+
+	<select id="list" parameterType="Map" resultType="MemoDTO">
+	select memono,title,wdate, viewcnt ,grpno,   
+	indent, ansnum ,  r                           
+	from(                                       
+		select memono,title,wdate, viewcnt ,grpno,  
+		indent, ansnum , rownum as r               
+		from(                                      
+			select memono,title,                    
+			to_char(wdate,'yyyy-mm-dd') wdate, viewcnt 
+			,grpno, indent, ansnum                  
+			from memo                             
+               
+			<where>
+				<if test="col=='title'">
+				    title like '%'||#{word}||'%'  
+				</if>
+				<if test="col=='content'">
+				    content like '%'||#{word}||'%'  
+				</if>
+			</where>                                    
+	    	       
+			order by grpno DESC, ansnum           
+		)  
+    <![CDATA[		                                         
+	)where r>= #{sno} and r<=#{eno} 
+	]]>                         
+	</select>
+	
+	<select id="total" parameterType="Map" resultType="int">
+	 select count(*) from memo
+	 <where>
+		<if test="col=='title'">
+		    title like '%'||#{word}||'%'  
+		</if>
+		<if test="col=='content'">
+		    content like '%'||#{word}||'%'  
+		</if>
+	</where>  
+	</select>
+
+</mapper>
