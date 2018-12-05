@@ -2,7 +2,30 @@
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-
+ <!-- *********************************************************************** -->
+  <!-- CKFINDER start -->
+  <!-- *********************************************************************** -->
+  <servlet>
+    <servlet-name>ConnectorServlet</servlet-name>
+    <servlet-class>com.ckfinder.connector.ConnectorServlet</servlet-class>
+    <init-param>
+      <param-name>XMLConfig</param-name>
+      <param-value>/WEB-INF/spring/ckfinder-config.xml</param-value>
+    </init-param>
+    <init-param>
+      <param-name>debug</param-name>
+      <param-value>false</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+ 
+  <servlet-mapping>
+    <servlet-name>ConnectorServlet</servlet-name>
+    <url-pattern>
+    /ckfinder/core/connector/java/connector.java
+    </url-pattern>
+  </servlet-mapping>
+ 
 	<!-- The definition of the Root Spring Container shared by all Servlets and Filters -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
@@ -31,7 +54,7 @@
 	</servlet-mapping>
 
 <filter>
-            <filter-name>encodingFilter</filter-name>
+<filter-name>encodingFilter</filter-name>
 <filter-class>
 org.springframework.web.filter.CharacterEncodingFilter
 </filter-class>
@@ -39,12 +62,12 @@ org.springframework.web.filter.CharacterEncodingFilter
 <param-name>encoding</param-name>
 <param-value>UTF-8</param-value>
 </init-param>
-      </filter>
+</filter>
  
-      <filter-mapping>
+<filter-mapping>
 <filter-name>encodingFilter</filter-name>
 <url-pattern>/*</url-pattern>
-      </filter-mapping>
+</filter-mapping>
  
 
  <servlet>
