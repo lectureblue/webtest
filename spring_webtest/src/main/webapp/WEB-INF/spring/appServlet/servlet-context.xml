@@ -22,8 +22,11 @@
 		<beans:property name="order" value="2" />
 	</beans:bean>
 	
-	<context:component-scan base-package="spring.sts.webtest" />
-	<context:component-scan base-package="spring.model.*" />
+<!-- 	<context:component-scan base-package="spring.sts.blog" /> -->
+<!-- 	<context:component-scan base-package="spring.model.blog" /> -->
+<context:component-scan base-package="spring.sts.blog" use-default-filters="false">
+<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+</context:component-scan>	
 	
 	
 	

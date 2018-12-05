@@ -7,13 +7,14 @@
     xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 	http://www.springframework.org/schema/beans/spring-beans.xsd
-	http://www.springframework.org/schema/beans 
-	http://www.springframework.org/schema/beans/spring-beans.xsd
 	http://www.springframework.org/schema/aop
     http://www.springframework.org/schema/aop/spring-aop.xsd
     http://www.springframework.org/schema/tx
     http://www.springframework.org/schema/tx/spring-tx.xsd
+    http://www.springframework.org/schema/context 
+    http://www.springframework.org/schema/context/spring-context.xsd	
 	">
+
 	<!-- Transaction Manager -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource" />
@@ -40,8 +41,8 @@
 	destroy-method="close"
 	class="org.apache.commons.dbcp.BasicDataSource" 
 	p:driverClassName="oracle.jdbc.driver.OracleDriver" 
-	p:url="jdbc:oracle:thin:@localhost:1521:XE" 
-	p:username="soldesk"  
+	p:url="jdbc:oracle:thin:@127.0.0.1t:1521:XE" 
+	p:username="soldesk12123213"  
 	p:password="1234"  
 	/> 
 	
