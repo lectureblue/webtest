@@ -9,11 +9,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   	select count(*) from bbs
   	where refnum = #{bbsno}
   </select>
-  <delete id="delete" parameterType="int">
-  	delete from bbs
-  	where bbsno = #{bbsno}
-  </delete>
-
   <select id="replyRead" parameterType="int" resultType="BbsDTO">
     select bbsno, title, grpno, indent, ansnum 
 	from bbs                                
@@ -25,6 +20,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  	where grpno = #{grpno}    
  	and ansnum > #{ansnum}      
   </update>
+  <delete id="delete" parameterType="int">
+  	delete from bbs
+  	where bbsno = #{bbsno}
+  </delete>
+
+  
   <insert id="replyCreate" parameterType="BbsDTO">
   	INSERT INTO bbs(bbsno, wname, title,                               
 	content, passwd, wdate, grpno, indent, ansnum, refnum,filename,filesize)
