@@ -5,11 +5,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="member">
 
-    <select id="loginCheck" parameterType="Map" resultType="int">
-    	select count(*) from member
-		where id= #{id}            
-		and passwd= #{passwd}         
-    </select>
+    
 
 	<select id="duplicateEmail" parameterType="String" resultType="int">
 		SELECT COUNT(email) 
@@ -33,7 +29,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where mname = #{mname}      
 		and id = #{id}            
 	</select>
-	
+	<select id="loginCheck" parameterType="Map" resultType="int">
+    	select count(*) from member
+		where id= #{id}            
+		and passwd= #{passwd}         
+    </select>
 	<select id="getFname" parameterType="String" resultType="String">
 		 select fname from member 
  		 where id = #{id}         
