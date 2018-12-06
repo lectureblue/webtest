@@ -13,8 +13,8 @@
 	destroy-method="close"
 	class="org.apache.commons.dbcp.BasicDataSource" 
 	p:driverClassName="oracle.jdbc.driver.OracleDriver" 
-	p:url="jdbc:oracle:thin:@localhost:1521:XE" 
-	p:username="soldesk"  
+	p:url="jdbc:oracle:thin:@127.0.0.1:1521:XE" 
+	p:username="soldesk1234"  
 	p:password="1234"  
 	/> 
 	
